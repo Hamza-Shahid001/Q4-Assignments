@@ -37,25 +37,6 @@ Agent Class: Encapsulates the core logic for an individual AI agent, including i
 
 Runner Class: Provides the execution interface for agents, handling the interaction loop with the LLM and managing different execution modes (sync, async, streaming).
 
-[ Your Application ]
-      |
-      V
-+---------------------+
-| Global Configuration| <--- API Keys (OpenAI, Gemini)
-+---------------------+
-      |
-      V
-+---------------------+     +------------------+
-|    Runner Level     | --> |   Agent Level    |
-| (run, run_sync,     |     | (Instructions,   |
-|  run_streamed)      |     |  Tools, Model)   |
-+---------------------+     +------------------+
-      |                           |
-      V                           V
-+-------------------+       +-------------------+
-|   OpenAI SDK Agent| <---> | Google Gemini API |
-+-------------------+       +-------------------+
-
 ## 4. Getting Started
 Follow these steps to get your project up and running.
 
