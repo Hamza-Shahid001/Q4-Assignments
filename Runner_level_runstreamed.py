@@ -1,0 +1,56 @@
+import os
+import asyncio
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
+from agents import Agent, OpenAIChatCompletionsModel, Runner, set_tracing_disabled
+from agents.run import RunConfig
+
+# Load environment variables
+load_dotenv()
+
+# Set the API key from environment variables
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+# Prompt for the user to input
+prompt = input("Enter your prompt: ")
+
+# Initialize the OpenAI client
+external_client = AsyncOpenAI(
+    api_key = GEMINI_API_KEY,  # Replace with your actual API key
+    base_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+model = OpenAIChatCompletionsModel(
+    model="gemini-1.5-flash",
+    openai_client = external_client
+)
+
+config = RunConfig(
+    model=model,
+    model_provider=external_client,
+    tracing_disabled=True
+)
+
+# Define the agent with instructions
+
+simple_agent:Agent = Agent(
+    name = "Personal Assistant",
+    instructions = "Respond according to the prompt",
+)
+
+set_tracing_disabled(simple_agent, True)
+
+async def main():
+    final_output = None
+    result_stream = Runner.run_streamed(simple_agent, 
+                                        input=prompt,
+                                         
+                                        run_config=config,)
+    for chunk in result_stream:
+        delta = chunk['choice'][0]['delta']
+        content = delta.get('content', '')
+        print(content, end='', flush=True)
+        final_output.append(content)
+    print("\nFinal Output:", final_output)
+ 
+asyncio.run(main())
