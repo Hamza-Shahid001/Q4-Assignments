@@ -1,0 +1,5 @@
+Installation requirements for the multi-agent system
+
+openai-agents
+
+python-dotenv
